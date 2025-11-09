@@ -1,0 +1,16 @@
+services:
+  app:
+    # Build dari direktori frontend menggunakan Dockerfile produksi
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # Beri tag pada image yang dihasilkan
+    # image: browser-streams-ws-frontend:latest
+    # Container ini sekarang menjalankan Nginx, jadi petakan port 80
+    # ports:
+      # - "80:80"
+    # Perlu terhubung ke backend
+    # depends_on:
+      # - backend
