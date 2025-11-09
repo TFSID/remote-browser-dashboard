@@ -23,27 +23,27 @@ export default function Home() {
   } = useWebSocket();
 
   return (
-    <div className="min-h-screen p-5 bg-gradient-to-br from-indigo-500 to-purple-700">
+    <>
       <Header isConnected={isConnected} />
 
       <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-5 mb-5">
-      //   <ControlPanel
-      //     sessionActive={sessionActive}
-      //     isConnected={isConnected}
-      //     sendMessage={sendMessage}
-      //   />
-      //   <LogsPanel
-      //     logs={logs}
-      //     logContainerRef={logContainerRef}
-      //     clearLogs={clearLogs}
-      //   />
-      // </div>
+        <ControlPanel
+          sessionActive={sessionActive}
+          isConnected={isConnected}
+          sendMessage={sendMessage}
+        />
+        <LogsPanel
+          logs={logs}
+          logContainerRef={logContainerRef}
+          clearLogs={clearLogs}
+        />
+      </div>
 
-      // <DataDisplay
-      //   scrapedData={scrapedData}
-      //   screenshotImage={screenshotImage}
-      //   clearData={clearData}
-      // />
+      <DataDisplay
+        scrapedData={scrapedData}
+        screenshotImage={screenshotImage}
+        clearData={clearData}
+      />
 
       <CaptchaModal
         show={captcha.show}
@@ -51,6 +51,6 @@ export default function Home() {
         sendMessage={sendMessage}
         onClose={hideCaptcha}
       />
-    </div>
+    </>
   );
 }
