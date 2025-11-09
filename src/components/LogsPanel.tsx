@@ -21,20 +21,20 @@ const logTypeStyles = {
   },
   error: {
     icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
-    className: "bg-red-50 text-red-800",
+    className: "bg-red-100 text-red-800", // Using red-100 for error background
   },
   data: {
     icon: <Database className="h-4 w-4 text-blue-500" />,
-    className: "bg-blue-50 text-blue-800",
+    className: "bg-blue-100 text-blue-800", // Using blue-100 for data background
   },
 };
 
 export const LogsPanel: React.FC<LogsPanelProps> = ({ logs, logContainerRef, clearLogs }) => {
   return (
-    <Card className="flex flex-col h-[600px]">
+    <Card className="flex flex-col h-[600px] bg-white/95 shadow-lg rounded-xl">
       <CardHeader className="flex flex-row items-center justify-between border-b p-4">
-        <CardTitle className="text-lg font-semibold">Logs</CardTitle>
-        <Button onClick={clearLogs} variant="secondary" size="sm">
+        <CardTitle className="text-lg font-semibold text-gray-800">Logs</CardTitle>
+        <Button onClick={clearLogs} variant="secondary" size="sm" className="bg-gray-500 hover:bg-gray-600 text-white">
           Clear Logs
         </Button>
       </CardHeader>

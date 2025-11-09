@@ -27,7 +27,7 @@ export const CaptchaModal: React.FC<CaptchaModalProps> = ({ show, captchaImage, 
     <Dialog open={show} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Solve CAPTCHA</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-gray-800">Solve CAPTCHA</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex justify-center mb-4">

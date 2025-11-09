@@ -18,9 +18,9 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
   return (
     <div className="space-y-5">
       {scrapedData && (
-        <Card>
+        <Card className="bg-white/95 shadow-lg rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between border-b p-4">
-            <CardTitle className="text-lg font-semibold">Scraped Data</CardTitle>
+            <CardTitle className="text-lg font-semibold text-gray-800">Scraped Data</CardTitle>
             <Button onClick={clearData} variant="secondary" size="sm">
               Clear Data
             </Button>
@@ -34,9 +34,9 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
       )}
 
       {screenshotImage && (
-        <Card>
+        <Card className="bg-white/95 shadow-lg rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between border-b p-4">
-            <CardTitle className="text-lg font-semibold">Screenshot</CardTitle>
+            <CardTitle className="text-lg font-semibold text-gray-800">Screenshot</CardTitle>
             <Button onClick={() => clearData()} variant="secondary" size="sm">
               Clear
             </Button>

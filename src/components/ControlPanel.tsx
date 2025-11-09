@@ -48,14 +48,14 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full bg-white/95 shadow-lg rounded-xl">
       <CardHeader>
-        <CardTitle>Controls</CardTitle>
+        <CardTitle className="text-xl font-bold text-gray-800">Controls</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-6">
         {/* Session Control Section */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold">Session Control</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Session Control</h3>
           <div className="flex items-center space-x-2">
             <Checkbox
               id="headless"
@@ -71,7 +71,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Button
               onClick={handleStartSession}
               disabled={!isConnected || sessionActive}
-              className="flex-1"
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               Start Session
             </Button>
@@ -90,7 +90,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         {/* Navigation Section */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold">Navigation</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Navigation</h3>
           <form onSubmit={handleGoToUrl} className="space-y-3">
             <Input
               type="text"
@@ -103,7 +103,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               type="submit"
               disabled={!sessionActive}
               variant="secondary"
-              className="w-full"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
             >
               Go to URL
             </Button>
@@ -114,7 +114,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         {/* CVE Scraper Section */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold">CVE Scraper</h3>
+          <h3 className="text-lg font-semibold text-gray-800">CVE Scraper</h3>
           <form onSubmit={handleScrapeCve} className="space-y-3">
             <Input
               type="text"
@@ -127,7 +127,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               type="submit"
               disabled={!sessionActive}
               variant="secondary"
-              className="w-full"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
             >
               Scrape CVE
             </Button>
@@ -138,12 +138,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         {/* Actions Section */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold">Actions</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Actions</h3>
           <Button
             onClick={handleGetScreenshot}
             disabled={!sessionActive}
             variant="secondary"
-            className="w-full"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
           >
             Capture Screenshot
           </Button>

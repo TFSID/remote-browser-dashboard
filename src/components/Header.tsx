@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ isConnected }) => {
       </h1>
       <Badge
         className={cn(
-          "px-4 py-2 text-sm font-semibold",
+          "px-4 py-2 text-sm font-semibold rounded-full", // rounded-full for statusBadge style
           isConnected ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
         )}
       >
