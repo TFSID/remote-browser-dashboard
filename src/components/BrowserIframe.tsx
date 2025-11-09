@@ -13,6 +13,7 @@ export const BrowserIframe: React.FC<BrowserIframeProps> = ({ url, sessionActive
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
+    // Reset loading state ketika URL berubah
     setIsLoading(true);
   }, [url]);
 
@@ -22,12 +23,13 @@ export const BrowserIframe: React.FC<BrowserIframeProps> = ({ url, sessionActive
         <CardTitle className="text-lg font-semibold text-gray-800">
           Browser View
         </CardTitle>
-        <p className="text-sm text-gray-500 truncate">{sessionActive ? url : "Session inactive"}</p>
+        <p className="text-sm text-gray-500 truncate">{sessionActive ? url : `Target URL: ${url}`}</p>
       </CardHeader>
-      <CardContent className="flex-1 p-0 overflow-hidden">
+      <CardContent className="flex-1 p-0 overflow-hidden relative">
         {!sessionActive ? (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            Start a session to view the browser.
+          <div className="flex flex-col items-center justify-center h-full text-gray-500 p-4 text-center">
+            <p className="mb-2">Start a session to view the browser.</p>
+            <p className="text-xs text-gray-400 break-all">Current Target: {url}</p>
           </div>
         ) : (
           <>
