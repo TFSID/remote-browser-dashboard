@@ -51,6 +51,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env*.production
 
 # vercel
 .vercel
@@ -58,3 +59,36 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#-------------------------
+# Development Directories
+#-------------------------
+**/.venv/
+**/node_modules/
+**/dist/
+**/__pycache__/
+**/.vscode/
+**/.idea/
+**/__dev/
+
+/storage
+
+#-------------------------
+# Development Files
+#-------------------------
+**/*-v[0-9].*
+**/*-v[0-9][0-9].*
+**/*-v[0-9]
+**/*-v[0-9][0-9]
+**/*-dev
+**/dev*.*
+
+#-------------------------
+# Environment Files
+#-------------------------
+.env
+
+#-------------------------
+# Frontend Directories
+#-------------------------
+/frontend/
