@@ -17,7 +17,7 @@ interface ControlPanelProps {
   sendMessage: (message: any) => void;
   handleStartSession: (headless: boolean) => void;
   handleStopSession: () => void;
-  setBrowserUrl: (url: string) => void; // Prop baru untuk mengatur URL iframe
+  setBrowserUrl: (url: string) => void; // Prop untuk mengatur URL iframe
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -30,7 +30,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   setBrowserUrl,
 }) => {
   const [url, setUrl] = useState<string>('https://example.com');
-  const [initialUrl, setInitialUrl] = useState<string>('https://example.com'); // State baru untuk URL awal
+  // Menggunakan URL VNC/Websockify sebagai placeholder default
+  const [initialUrl, setInitialUrl] = useState<string>('http://10.20.20.99:4444/vnc/host/172.19.0.2/port/50000/?nginx=&path=proxy/172.19.0.2:50000/websockify&view_only=false');
   const [cveId, setCveId] = useState<string>('CVE-2023-0001');
   const [headlessMode, setHeadlessMode] = useState<boolean>(false);
 
@@ -39,8 +40,15 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       showError("Cannot start session: Not connected to WebSocket server.");
       return;
     }
-    // Set URL iframe lokal sebelum memulai sesi
+    if (!initialUrl) {
+      showError("Initial Browser URL cannot be empty.");
+      return;
+    }
+    
+    // 1. Mengatur URL iframe ke alamat yang dimasukkan pengguna
     setBrowserUrl(initialUrl);
+    
+    // 2. Memulai sesi WebSocket (mengirim request ke backend)
     handleStartSession(headlessMode);
   };
 
@@ -51,7 +59,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
     if (!url) return showError("URL cannot be empty.");
-    // sendMessageWithUrlUpdate di index.tsx akan menangani pembaruan browserUrl
+    // Mengirim perintah navigasi ke backend (yang juga akan memperbarui iframe URL di index.tsx)
     sendMessage({ action: 'goto', url });
   };
 
@@ -87,13 +95,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           
           {/* Input URL Awal */}
           <div className="space-y-2">
-            <Label htmlFor="initial-url">Initial Browser URL</Label>
+            <Label htmlFor="initial-url">Initial Browser URL (VNC/Websockify)</Label>
             <Input
               id="initial-url"
               type="text"
               value={initialUrl}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInitialUrl(e.target.value)}
-              placeholder="e.g., https://google.com"
+              placeholder="e.g., http://host:port/vnc/..."
               disabled={sessionActive || isStartingSession}
               className="w-full transition-all duration-200 focus:border-indigo-500"
             />
