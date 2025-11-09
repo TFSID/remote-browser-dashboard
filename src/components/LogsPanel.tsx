@@ -21,11 +21,11 @@ const logTypeStyles = {
   },
   error: {
     icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
-    className: "bg-red-100 text-red-800", // Using red-100 for error background
+    className: "bg-red-100 text-red-800",
   },
   data: {
     icon: <Database className="h-4 w-4 text-blue-500" />,
-    className: "bg-blue-100 text-blue-800", // Using blue-100 for data background
+    className: "bg-blue-100 text-blue-800",
   },
 };
 

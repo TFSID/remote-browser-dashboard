@@ -14,7 +14,7 @@ interface ControlPanelProps {
   sessionActive: boolean;
   isConnected: boolean;
   isStartingSession: boolean;
-  sendMessage: (message: any) => void;
+  sendMessage: (message: any) => void; // Ini adalah sendMessageWithUrlUpdate dari index.tsx
   handleStartSession: (headless: boolean) => void;
   handleStopSession: () => void;
 }
@@ -46,6 +46,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
     if (!url) return showError("URL cannot be empty.");
+    // sendMessage sekarang adalah sendMessageWithUrlUpdate dari index.tsx
     sendMessage({ action: 'goto', url });
   };
 
@@ -62,7 +63,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const renderContent = () => {
     if (isStartingSession) {
       return (
-        <div className="space-y-4">
+        <div className="flex flex-col space-y-6 p-6">
           <Skeleton className="h-6 w-3/4" />
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
