@@ -55,7 +55,7 @@ export const CaptchaModal: React.FC<CaptchaModalProps> = ({ show, captchaImage, 
           <Button onClick={onClose} variant="outline">
             Cancel
           </Button>
-          <Button onClick={handleSubmitCaptcha} disabled={!captchaSolution} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={handleSubmitCaptcha} disabled={!captchaSolution}>
             Submit Solution
           </Button>
         </DialogFooter>

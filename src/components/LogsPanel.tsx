@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { AlertTriangle, Info, Database } from 'lucide-react';
 
 interface LogsPanelProps {
   logs: LogEntry[];
@@ -13,12 +14,27 @@ interface LogsPanelProps {
   clearLogs: () => void;
 }
 
+const logTypeStyles = {
+  log: {
+    icon: <Info className="h-4 w-4 text-gray-500" />,
+    className: "bg-gray-50 text-gray-800",
+  },
+  error: {
+    icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+    className: "bg-red-50 text-red-800",
+  },
+  data: {
+    icon: <Database className="h-4 w-4 text-blue-500" />,
+    className: "bg-blue-50 text-blue-800",
+  },
+};
+
 export const LogsPanel: React.FC<LogsPanelProps> = ({ logs, logContainerRef, clearLogs }) => {
   return (
     <Card className="flex flex-col h-[600px]">
       <CardHeader className="flex flex-row items-center justify-between border-b p-4">
         <CardTitle className="text-lg font-semibold">Logs</CardTitle>
-        <Button onClick={clearLogs} variant="secondary" size="sm" className="bg-gray-500 hover:bg-gray-600 text-white">
+        <Button onClick={clearLogs} variant="secondary" size="sm">
           Clear Logs
         </Button>
       </CardHeader>
@@ -29,14 +45,15 @@ export const LogsPanel: React.FC<LogsPanelProps> = ({ logs, logContainerRef, cle
               <div
                 key={index}
                 className={cn(
-                  "mb-2 p-2 rounded-md",
-                  log.type === 'error' && "bg-red-100 text-red-800",
-                  log.type === 'data' && "bg-blue-100 text-blue-800",
-                  log.type === 'log' && "bg-gray-50 text-gray-800"
+                  "flex items-start gap-3 mb-2 p-2 rounded-md",
+                  logTypeStyles[log.type].className
                 )}
               >
-                <span className="text-gray-500 mr-2">[{log.timestamp}]</span>
-                <span>{log.message}</span>
+                <div className="flex-shrink-0 mt-0.5">{logTypeStyles[log.type].icon}</div>
+                <div className="flex-grow">
+                  <span className="text-gray-500 mr-2">[{log.timestamp}]</span>
+                  <span>{log.message}</span>
+                </div>
               </div>
             ))}
             {logs.length === 0 && (

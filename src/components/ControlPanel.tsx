@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 
 interface ControlPanelProps {
   sessionActive: boolean;
@@ -47,21 +48,22 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col space-y-5">
-      {/* Session Control */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Session Control</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-2 mb-4">
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>Controls</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col space-y-6">
+        {/* Session Control Section */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold">Session Control</h3>
+          <div className="flex items-center space-x-2">
             <Checkbox
               id="headless"
               checked={headlessMode}
               onCheckedChange={(checked) => setHeadlessMode(!!checked)}
               disabled={sessionActive}
             />
-            <Label htmlFor="headless" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <Label htmlFor="headless">
               Headless Mode
             </Label>
           </div>
@@ -69,7 +71,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Button
               onClick={handleStartSession}
               disabled={!isConnected || sessionActive}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+              className="flex-1"
             >
               Start Session
             </Button>
@@ -82,16 +84,14 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               Stop Session
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Navigation */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Navigation</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleGoToUrl} className="flex flex-col space-y-3">
+        <Separator />
+
+        {/* Navigation Section */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold">Navigation</h3>
+          <form onSubmit={handleGoToUrl} className="space-y-3">
             <Input
               type="text"
               value={url}
@@ -102,21 +102,20 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Button
               type="submit"
               disabled={!sessionActive}
-              className="bg-blue-500 hover:bg-blue-600"
+              variant="secondary"
+              className="w-full"
             >
               Go to URL
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* CVE Scraper */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">CVE Scraper</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleScrapeCve} className="flex flex-col space-y-3">
+        <Separator />
+
+        {/* CVE Scraper Section */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold">CVE Scraper</h3>
+          <form onSubmit={handleScrapeCve} className="space-y-3">
             <Input
               type="text"
               value={cveId}
@@ -127,29 +126,29 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Button
               type="submit"
               disabled={!sessionActive}
-              className="bg-blue-500 hover:bg-blue-600"
+              variant="secondary"
+              className="w-full"
             >
               Scrape CVE
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <Separator />
+
+        {/* Actions Section */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold">Actions</h3>
           <Button
             onClick={handleGetScreenshot}
             disabled={!sessionActive}
-            className="w-full bg-blue-500 hover:bg-blue-600"
+            variant="secondary"
+            className="w-full"
           >
             Capture Screenshot
           </Button>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

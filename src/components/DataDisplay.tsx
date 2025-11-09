@@ -21,7 +21,7 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
         <Card>
           <CardHeader className="flex flex-row items-center justify-between border-b p-4">
             <CardTitle className="text-lg font-semibold">Scraped Data</CardTitle>
-            <Button onClick={clearData} variant="secondary" size="sm" className="bg-gray-500 hover:bg-gray-600 text-white">
+            <Button onClick={clearData} variant="secondary" size="sm">
               Clear Data
             </Button>
           </CardHeader>
@@ -37,7 +37,7 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
         <Card>
           <CardHeader className="flex flex-row items-center justify-between border-b p-4">
             <CardTitle className="text-lg font-semibold">Screenshot</CardTitle>
-            <Button onClick={() => clearData()} variant="secondary" size="sm" className="bg-gray-500 hover:bg-gray-600 text-white">
+            <Button onClick={() => clearData()} variant="secondary" size="sm">
               Clear
             </Button>
           </CardHeader>
