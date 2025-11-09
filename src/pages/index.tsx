@@ -50,18 +50,19 @@ export default function Home() {
           sendMessage={sendMessageWithUrlUpdate} // Menggunakan handler yang dimodifikasi
           handleStartSession={handleStartSession}
           handleStopSession={handleStopSession}
+          setBrowserUrl={setBrowserUrl} // Meneruskan fungsi setBrowserUrl
         />
         
         {/* Output Area: Logs and Browser View */}
         <div className="flex flex-col gap-5">
-          <BrowserIframe
-            url={browserUrl}
-            sessionActive={sessionActive}
-          />
           <LogsPanel
             logs={logs}
             logContainerRef={logContainerRef}
             clearLogs={clearLogs}
+          />
+          <BrowserIframe
+            url={browserUrl}
+            sessionActive={sessionActive}
           />
         </div>
       </div>

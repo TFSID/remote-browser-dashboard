@@ -14,9 +14,10 @@ interface ControlPanelProps {
   sessionActive: boolean;
   isConnected: boolean;
   isStartingSession: boolean;
-  sendMessage: (message: any) => void; // Ini adalah sendMessageWithUrlUpdate dari index.tsx
+  sendMessage: (message: any) => void;
   handleStartSession: (headless: boolean) => void;
   handleStopSession: () => void;
+  setBrowserUrl: (url: string) => void; // Prop baru untuk mengatur URL iframe
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -26,8 +27,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   sendMessage,
   handleStartSession,
   handleStopSession,
+  setBrowserUrl,
 }) => {
   const [url, setUrl] = useState<string>('https://example.com');
+  const [initialUrl, setInitialUrl] = useState<string>('https://example.com'); // State baru untuk URL awal
   const [cveId, setCveId] = useState<string>('CVE-2023-0001');
   const [headlessMode, setHeadlessMode] = useState<boolean>(false);
 
@@ -36,6 +39,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       showError("Cannot start session: Not connected to WebSocket server.");
       return;
     }
+    // Set URL iframe lokal sebelum memulai sesi
+    setBrowserUrl(initialUrl);
     handleStartSession(headlessMode);
   };
 
@@ -46,7 +51,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
     if (!url) return showError("URL cannot be empty.");
-    // sendMessage sekarang adalah sendMessageWithUrlUpdate dari index.tsx
+    // sendMessageWithUrlUpdate di index.tsx akan menangani pembaruan browserUrl
     sendMessage({ action: 'goto', url });
   };
 
@@ -79,6 +84,21 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         {/* Session Control Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-800">Session Control</h3>
+          
+          {/* Input URL Awal */}
+          <div className="space-y-2">
+            <Label htmlFor="initial-url">Initial Browser URL</Label>
+            <Input
+              id="initial-url"
+              type="text"
+              value={initialUrl}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setInitialUrl(e.target.value)}
+              placeholder="e.g., https://google.com"
+              disabled={sessionActive || isStartingSession}
+              className="w-full transition-all duration-200 focus:border-indigo-500"
+            />
+          </div>
+
           <div className="flex items-center space-x-2">
             <Checkbox
               id="headless"
