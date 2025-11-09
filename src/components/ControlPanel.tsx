@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -95,7 +95,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Input
               type="text"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
               placeholder="Enter URL"
               disabled={!sessionActive}
             />
@@ -120,7 +120,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Input
               type="text"
               value={cveId}
-              onChange={(e) => setCveId(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setCveId(e.target.value)}
               placeholder="Enter CVE ID"
               disabled={!sessionActive}
             />

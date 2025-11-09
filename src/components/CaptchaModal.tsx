@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,7 +44,7 @@ export const CaptchaModal: React.FC<CaptchaModalProps> = ({ show, captchaImage, 
             <Input
               id="solution"
               value={captchaSolution}
-              onChange={(e) => setCaptchaSolution(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setCaptchaSolution(e.target.value)}
               placeholder="Enter CAPTCHA solution"
               className="col-span-3"
               autoFocus
