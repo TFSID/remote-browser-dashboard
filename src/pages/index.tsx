@@ -55,14 +55,14 @@ export default function Home() {
         
         {/* Output Area: Logs and Browser View */}
         <div className="flex flex-col gap-5">
+          <BrowserIframe
+            url={browserUrl}
+            sessionActive={sessionActive}
+          />
           <LogsPanel
             logs={logs}
             logContainerRef={logContainerRef}
             clearLogs={clearLogs}
-          />
-          <BrowserIframe
-            url={browserUrl}
-            sessionActive={sessionActive}
           />
         </div>
       </div>
