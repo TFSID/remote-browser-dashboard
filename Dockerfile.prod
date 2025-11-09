@@ -34,7 +34,6 @@ COPY --from=builder /app/build .
 COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 # Ekspos port 80
-EXPOSE 80
 
 # Jalankan Nginx di foreground
 CMD ["nginx", "-g", "daemon off;"]
