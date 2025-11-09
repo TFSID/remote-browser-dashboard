@@ -1,0 +1,27 @@
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app/frontend
+
+# Copy package files
+COPY package.json yarn.lock ./
+
+# Install dependencies
+# RUN yarn install --frozen-lockfile
+RUN yarn install
+
+# Copy application files
+COPY . .
+
+# Create .env file if not exists (will be overridden by docker-compose)
+RUN touch .env
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+
+# Start development server
+CMD ["yarn", "start"]
