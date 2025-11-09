@@ -8,66 +8,55 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { showError } from '@/lib/toast';
+// import { showError } from '@/lib/toast'; // Hapus impor toast
 
 interface ControlPanelProps {
   sessionActive: boolean;
-  isConnected: boolean;
-  isStartingSession: boolean;
-  sendMessage: (message: any) => void;
-  handleStartSession: (headless: boolean) => void;
+  isConnected: boolean; // Tidak digunakan, tapi dipertahankan untuk kompatibilitas prop
+  isStartingSession: boolean; // Tidak digunakan
+  handleStartSession: (initialUrl: string) => void; // Mengubah tipe handler
   handleStopSession: () => void;
-  setBrowserUrl: (url: string) => void; // Prop untuk mengatur URL iframe
+  setBrowserUrl: (url: string) => void; // Tidak digunakan langsung di sini, tapi dipertahankan
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   sessionActive,
-  isConnected,
   isStartingSession,
-  sendMessage,
   handleStartSession,
   handleStopSession,
-  setBrowserUrl,
 }) => {
   const [url, setUrl] = useState<string>('https://example.com');
-  // Menggunakan URL VNC/Websockify sebagai placeholder default
   const [initialUrl, setInitialUrl] = useState<string>('http://10.20.20.99:4444/vnc/host/172.19.0.2/port/50000/?nginx=&path=proxy/172.19.0.2:50000/websockify&view_only=false');
   const [cveId, setCveId] = useState<string>('CVE-2023-0001');
-  const [headlessMode, setHeadlessMode] = useState<boolean>(false);
+  const [headlessMode, setHeadlessMode] = useState<boolean>(false); // Tidak digunakan, tapi dipertahankan untuk UI
 
   const handleStart = () => {
-    // Pengecekan koneksi tetap di sini untuk feedback, tetapi tombol tetap bisa diklik
-    if (!isConnected) {
-      showError("Attempting to start session, but WebSocket is disconnected. Please check server status.");
-      // Kita tetap melanjutkan proses start, karena backend mungkin akan mencoba koneksi ulang
-    }
     if (!initialUrl) {
-      showError("Initial Browser URL cannot be empty.");
+      // showError("Initial Browser URL cannot be empty."); // Hapus toast
       return;
     }
     
-    setBrowserUrl(initialUrl);
-    handleStartSession(headlessMode);
+    // Hanya memanggil handler yang akan mengatur URL dan sessionActive
+    handleStartSession(initialUrl);
   };
 
   const handleStop = () => {
     handleStopSession();
   };
 
+  // Fungsi-fungsi ini sekarang tidak melakukan apa-apa selain mencegah submit form
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
-    if (!url) return showError("URL cannot be empty.");
-    sendMessage({ action: 'goto', url });
+    // Logika navigasi langsung ke iframe harus ditambahkan di sini jika diperlukan
+    // Untuk saat ini, kita hanya mencegah submit
   };
 
   const handleScrapeCve = (e: FormEvent) => {
     e.preventDefault();
-    if (!cveId) return showError("CVE ID cannot be empty.");
-    sendMessage({ action: 'scrape_cve', cve_id: cveId });
   };
 
   const handleGetScreenshot = () => {
-    sendMessage({ action: 'get_screenshot' });
+    // Tidak ada aksi
   };
 
   const renderContent = () => {
@@ -92,14 +81,14 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           
           {/* Input URL Awal */}
           <div className="space-y-2">
-            <Label htmlFor="initial-url">Initial Browser URL (VNC/Websockify)</Label>
+            <Label htmlFor="initial-url">Browser URL (VNC/Websockify)</Label>
             <Input
               id="initial-url"
               type="text"
               value={initialUrl}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInitialUrl(e.target.value)}
               placeholder="e.g., http://host:port/vnc/..."
-              disabled={sessionActive || isStartingSession}
+              disabled={sessionActive}
               className="w-full transition-all duration-200 focus:border-indigo-500"
             />
           </div>
@@ -109,49 +98,48 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               id="headless"
               checked={headlessMode}
               onCheckedChange={(checked) => setHeadlessMode(!!checked)}
-              disabled={sessionActive || isStartingSession}
+              disabled={sessionActive}
             />
             <Label htmlFor="headless">
-              Headless Mode
+              Headless Mode (Disabled)
             </Label>
           </div>
           <div className="flex gap-3">
             <Button
               onClick={handleStart}
-              // Hapus !isConnected dari disabled
-              disabled={sessionActive || isStartingSession} 
+              disabled={sessionActive} 
               className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
             >
-              Start Session
+              Load Iframe
             </Button>
             <Button
               onClick={handleStop}
-              disabled={!sessionActive || isStartingSession}
+              disabled={!sessionActive}
               variant="destructive"
               className="flex-1 transition-all duration-200"
             >
-              Stop Session
+              Clear Iframe
             </Button>
           </div>
         </div>
 
         <Separator />
 
-        {/* Navigation Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Navigation</h3>
+        {/* Navigation Section (Dibuat non-fungsional) */}
+        <div className="space-y-4 opacity-50 pointer-events-none">
+          <h3 className="text-lg font-semibold text-gray-800">Navigation (Disabled)</h3>
           <form onSubmit={handleGoToUrl} className="space-y-3">
             <Input
               type="text"
               value={url}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
               placeholder="Enter URL"
-              disabled={!sessionActive}
+              disabled={true}
               className="w-full transition-all duration-200 focus:border-indigo-500"
             />
             <Button
               type="submit"
-              disabled={!sessionActive}
+              disabled={true}
               variant="secondary"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
             >
@@ -162,21 +150,21 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <Separator />
 
-        {/* CVE Scraper Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">CVE Scraper</h3>
+        {/* CVE Scraper Section (Dibuat non-fungsional) */}
+        <div className="space-y-4 opacity-50 pointer-events-none">
+          <h3 className="text-lg font-semibold text-gray-800">CVE Scraper (Disabled)</h3>
           <form onSubmit={handleScrapeCve} className="space-y-3">
             <Input
               type="text"
               value={cveId}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setCveId(e.target.value)}
               placeholder="Enter CVE ID"
-              disabled={!sessionActive}
+              disabled={true}
               className="w-full transition-all duration-200 focus:border-indigo-500"
             />
             <Button
               type="submit"
-              disabled={!sessionActive}
+              disabled={true}
               variant="secondary"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
             >
@@ -187,12 +175,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <Separator />
 
-        {/* Actions Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">Actions</h3>
+        {/* Actions Section (Dibuat non-fungsional) */}
+        <div className="space-y-4 opacity-50 pointer-events-none">
+          <h3 className="text-lg font-semibold text-gray-800">Actions (Disabled)</h3>
           <Button
             onClick={handleGetScreenshot}
-            disabled={!sessionActive}
+            disabled={true}
             variant="secondary"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
           >

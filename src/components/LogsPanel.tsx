@@ -1,12 +1,18 @@
 "use client";
 
 import React, { RefObject } from 'react';
-import { LogEntry } from '@/hooks/useWebSocket';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { AlertTriangle, Info, Database } from 'lucide-react';
+
+// Definisi LogEntry yang disederhanakan
+interface LogEntry {
+  timestamp: string;
+  message: string;
+  type: 'log' | 'error' | 'data';
+}
 
 interface LogsPanelProps {
   logs: LogEntry[];
@@ -31,9 +37,9 @@ const logTypeStyles = {
 
 export const LogsPanel: React.FC<LogsPanelProps> = ({ logs, logContainerRef, clearLogs }) => {
   return (
-    <Card className="flex flex-col h-[600px] bg-white/95 shadow-lg rounded-xl">
+    <Card className="flex flex-col h-[600px] bg-white/95 shadow-lg rounded-xl opacity-50 pointer-events-none">
       <CardHeader className="flex flex-row items-center justify-between border-b p-4">
-        <CardTitle className="text-lg font-semibold text-gray-800">Logs</CardTitle>
+        <CardTitle className="text-lg font-semibold text-gray-800">Logs (Disabled)</CardTitle>
         <Button onClick={clearLogs} variant="secondary" size="sm" className="bg-gray-500 hover:bg-gray-600 text-white">
           Clear Logs
         </Button>

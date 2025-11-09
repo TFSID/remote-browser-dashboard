@@ -1,56 +1,48 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useWebSocket } from '@/hooks/useWebSocket';
 import { Header } from '@/components/Header';
 import { ControlPanel } from '@/components/ControlPanel';
-import { LogsPanel } from '@/components/LogsPanel';
 import { DataDisplay } from '@/components/DataDisplay';
 import { CaptchaModal } from '@/components/CaptchaModal';
 import { BrowserIframe } from '@/components/BrowserIframe';
+import { LogsPanel } from '@/components/LogsPanel'; // Tetap impor LogsPanel untuk saat ini
 
 export default function Home() {
-  const {
-    isConnected,
-    sessionActive,
-    isStartingSession,
-    logs,
-    scrapedData,
-    screenshotImage,
-    captcha,
-    logContainerRef,
-    sendMessage,
-    clearLogs,
-    clearData,
-    hideCaptcha,
-    handleStartSession,
-    handleStopSession,
-  } = useWebSocket();
-
-  // State lokal untuk URL yang ditampilkan di iframe
+  // State lokal sederhana untuk mengontrol UI
   const [browserUrl, setBrowserUrl] = useState<string>('about:blank');
+  const [sessionActive, setSessionActive] = useState<boolean>(false);
+  
+  // Dummy data/handlers karena WebSocket dihapus
+  const logs: any[] = [];
+  const logContainerRef = React.useRef(null);
+  const clearLogs = () => {};
+  const clearData = () => {};
+  const hideCaptcha = () => {};
+  const sendMessage = () => {};
+  
+  const handleStartSession = (initialUrl: string) => {
+    setBrowserUrl(initialUrl);
+    setSessionActive(true);
+  };
 
-  // Modifikasi sendMessage untuk memperbarui browserUrl saat navigasi
-  const sendMessageWithUrlUpdate = (message: any) => {
-    if (message.action === 'goto' && message.url) {
-      setBrowserUrl(message.url);
-    }
-    sendMessage(message);
+  const handleStopSession = () => {
+    setSessionActive(false);
+    setBrowserUrl('about:blank');
   };
 
   return (
     <>
-      <Header isConnected={isConnected} />
+      <Header isConnected={false} /> {/* Koneksi selalu false */}
 
       <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-5 mb-5">
         <ControlPanel
           sessionActive={sessionActive}
-          isConnected={isConnected}
-          isStartingSession={isStartingSession}
-          sendMessage={sendMessageWithUrlUpdate} // Menggunakan handler yang dimodifikasi
+          isConnected={false}
+          isStartingSession={false}
           handleStartSession={handleStartSession}
           handleStopSession={handleStopSession}
-          setBrowserUrl={setBrowserUrl} // Meneruskan fungsi setBrowserUrl
+          setBrowserUrl={setBrowserUrl}
         />
         
         {/* Output Area: Logs and Browser View */}
@@ -67,15 +59,16 @@ export default function Home() {
         </div>
       </div>
 
+      {/* DataDisplay dan CaptchaModal mungkin perlu dibersihkan lebih lanjut, tapi untuk saat ini biarkan dengan dummy props */}
       <DataDisplay
-        scrapedData={scrapedData}
-        screenshotImage={screenshotImage}
+        scrapedData={null}
+        screenshotImage={''}
         clearData={clearData}
       />
 
       <CaptchaModal
-        show={captcha.show}
-        captchaImage={captcha.image}
+        show={false}
+        captchaImage={''}
         sendMessage={sendMessage}
         onClose={hideCaptcha}
       />
