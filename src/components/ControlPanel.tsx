@@ -36,19 +36,17 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const [headlessMode, setHeadlessMode] = useState<boolean>(false);
 
   const handleStart = () => {
+    // Pengecekan koneksi tetap di sini untuk feedback, tetapi tombol tetap bisa diklik
     if (!isConnected) {
-      showError("Cannot start session: Not connected to WebSocket server.");
-      return;
+      showError("Attempting to start session, but WebSocket is disconnected. Please check server status.");
+      // Kita tetap melanjutkan proses start, karena backend mungkin akan mencoba koneksi ulang
     }
     if (!initialUrl) {
       showError("Initial Browser URL cannot be empty.");
       return;
     }
     
-    // 1. Mengatur URL iframe ke alamat yang dimasukkan pengguna
     setBrowserUrl(initialUrl);
-    
-    // 2. Memulai sesi WebSocket (mengirim request ke backend)
     handleStartSession(headlessMode);
   };
 
@@ -59,7 +57,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
     if (!url) return showError("URL cannot be empty.");
-    // Mengirim perintah navigasi ke backend (yang juga akan memperbarui iframe URL di index.tsx)
     sendMessage({ action: 'goto', url });
   };
 
@@ -121,7 +118,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <div className="flex gap-3">
             <Button
               onClick={handleStart}
-              disabled={!isConnected || sessionActive || isStartingSession}
+              // Hapus !isConnected dari disabled
+              disabled={sessionActive || isStartingSession} 
               className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
             >
               Start Session
