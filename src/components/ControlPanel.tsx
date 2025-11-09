@@ -7,39 +7,51 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { showError } from '@/lib/toast';
 
 interface ControlPanelProps {
   sessionActive: boolean;
   isConnected: boolean;
+  isStartingSession: boolean;
   sendMessage: (message: any) => void;
+  handleStartSession: (headless: boolean) => void;
+  handleStopSession: () => void;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   sessionActive,
   isConnected,
+  isStartingSession,
   sendMessage,
+  handleStartSession,
+  handleStopSession,
 }) => {
   const [url, setUrl] = useState<string>('https://example.com');
   const [cveId, setCveId] = useState<string>('CVE-2023-0001');
   const [headlessMode, setHeadlessMode] = useState<boolean>(false);
 
-  const handleStartSession = () => {
-    sendMessage({ action: 'start_session', headless: headlessMode });
+  const handleStart = () => {
+    if (!isConnected) {
+      showError("Cannot start session: Not connected to WebSocket server.");
+      return;
+    }
+    handleStartSession(headlessMode);
   };
 
-  const handleStopSession = () => {
-    sendMessage({ action: 'stop_session' });
+  const handleStop = () => {
+    handleStopSession();
   };
 
   const handleGoToUrl = (e: FormEvent) => {
     e.preventDefault();
-    if (!url) return;
+    if (!url) return showError("URL cannot be empty.");
     sendMessage({ action: 'goto', url });
   };
 
   const handleScrapeCve = (e: FormEvent) => {
     e.preventDefault();
-    if (!cveId) return;
+    if (!cveId) return showError("CVE ID cannot be empty.");
     sendMessage({ action: 'scrape_cve', cve_id: cveId });
   };
 
@@ -47,12 +59,22 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     sendMessage({ action: 'get_screenshot' });
   };
 
-  return (
-    <Card className="h-full bg-white/95 shadow-lg rounded-xl">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold text-gray-800">Controls</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col space-y-6">
+  const renderContent = () => {
+    if (isStartingSession) {
+      return (
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col space-y-6">
         {/* Session Control Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-800">Session Control</h3>
@@ -61,7 +83,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               id="headless"
               checked={headlessMode}
               onCheckedChange={(checked) => setHeadlessMode(!!checked)}
-              disabled={sessionActive}
+              disabled={sessionActive || isStartingSession}
             />
             <Label htmlFor="headless">
               Headless Mode
@@ -69,17 +91,17 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           </div>
           <div className="flex gap-3">
             <Button
-              onClick={handleStartSession}
-              disabled={!isConnected || sessionActive}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+              onClick={handleStart}
+              disabled={!isConnected || sessionActive || isStartingSession}
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
             >
               Start Session
             </Button>
             <Button
-              onClick={handleStopSession}
-              disabled={!sessionActive}
+              onClick={handleStop}
+              disabled={!sessionActive || isStartingSession}
               variant="destructive"
-              className="flex-1"
+              className="flex-1 transition-all duration-200"
             >
               Stop Session
             </Button>
@@ -98,13 +120,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
               placeholder="Enter URL"
               disabled={!sessionActive}
-              className="w-full"
+              className="w-full transition-all duration-200 focus:border-indigo-500"
             />
             <Button
               type="submit"
               disabled={!sessionActive}
               variant="secondary"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
             >
               Go to URL
             </Button>
@@ -123,13 +145,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>) => setCveId(e.target.value)}
               placeholder="Enter CVE ID"
               disabled={!sessionActive}
-              className="w-full"
+              className="w-full transition-all duration-200 focus:border-indigo-500"
             />
             <Button
               type="submit"
               disabled={!sessionActive}
               variant="secondary"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
             >
               Scrape CVE
             </Button>
@@ -145,11 +167,22 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             onClick={handleGetScreenshot}
             disabled={!sessionActive}
             variant="secondary"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200"
           >
             Capture Screenshot
           </Button>
         </div>
+      </div>
+    );
+  };
+
+  return (
+    <Card className="h-full bg-white/95 shadow-lg rounded-xl">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold text-gray-800">Controls</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {renderContent()}
       </CardContent>
     </Card>
   );

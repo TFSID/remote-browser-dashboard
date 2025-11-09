@@ -11,6 +11,7 @@ export default function Home() {
   const {
     isConnected,
     sessionActive,
+    isStartingSession,
     logs,
     scrapedData,
     screenshotImage,
@@ -20,6 +21,8 @@ export default function Home() {
     clearLogs,
     clearData,
     hideCaptcha,
+    handleStartSession,
+    handleStopSession,
   } = useWebSocket();
 
   return (
@@ -30,7 +33,10 @@ export default function Home() {
         <ControlPanel
           sessionActive={sessionActive}
           isConnected={isConnected}
+          isStartingSession={isStartingSession}
           sendMessage={sendMessage}
+          handleStartSession={handleStartSession}
+          handleStopSession={handleStopSession}
         />
         <LogsPanel
           logs={logs}

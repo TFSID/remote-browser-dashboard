@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { showSuccess, showError, showLoading, dismissToast } from '@/lib/toast';
 
 export interface LogEntry {
   timestamp: string;
@@ -11,6 +12,7 @@ export interface LogEntry {
 export interface WebSocketState {
   isConnected: boolean;
   sessionActive: boolean;
+  isStartingSession: boolean; // New loading state
   logs: LogEntry[];
   scrapedData: any | null;
   screenshotImage: string;
@@ -26,6 +28,7 @@ export const useWebSocket = () => {
   const [state, setState] = useState<WebSocketState>({
     isConnected: false,
     sessionActive: false,
+    isStartingSession: false,
     logs: [],
     scrapedData: null,
     screenshotImage: '',
@@ -37,6 +40,7 @@ export const useWebSocket = () => {
   
   const wsRef = useRef<WebSocket | null>(null);
   const logContainerRef = useRef<HTMLDivElement>(null);
+  const loadingToastIdRef = useRef<string | null>(null);
 
   const addLog = useCallback((message: string, type: 'log' | 'error' | 'data') => {
     const timestamp = new Date().toLocaleTimeString();
@@ -50,7 +54,9 @@ export const useWebSocket = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     } else {
+      showError('Not connected to server. Attempting to reconnect.');
       addLog('Not connected to server', 'error');
+      connectWebSocket();
     }
   }, [addLog]);
 
@@ -59,15 +65,23 @@ export const useWebSocket = () => {
       case 'log':
         addLog(data.message, 'log');
         if (data.message.includes('Session started')) {
-          setState(prev => ({ ...prev, sessionActive: true }));
+          if (loadingToastIdRef.current) dismissToast(loadingToastIdRef.current);
+          showSuccess('Session started successfully.');
+          setState(prev => ({ ...prev, sessionActive: true, isStartingSession: false }));
         } else if (data.message.includes('Session stopped')) {
-          setState(prev => ({ ...prev, sessionActive: false }));
+          if (loadingToastIdRef.current) dismissToast(loadingToastIdRef.current);
+          showSuccess('Session stopped.');
+          setState(prev => ({ ...prev, sessionActive: false, isStartingSession: false }));
         }
         break;
       case 'error':
+        if (loadingToastIdRef.current) dismissToast(loadingToastIdRef.current);
+        showError(data.message);
         addLog(data.message, 'error');
+        setState(prev => ({ ...prev, isStartingSession: false }));
         break;
       case 'data':
+        showSuccess('Scraping data received.');
         addLog('Data received', 'data');
         setState(prev => ({ ...prev, scrapedData: data.payload }));
         break;
@@ -79,6 +93,7 @@ export const useWebSocket = () => {
         }));
         break;
       case 'screenshot':
+        showSuccess('Screenshot captured.');
         setState(prev => ({ ...prev, screenshotImage: data.image_base64 }));
         addLog('Screenshot received', 'log');
         break;
@@ -100,11 +115,12 @@ export const useWebSocket = () => {
     };
 
     ws.onclose = () => {
-      setState(prev => ({ ...prev, isConnected: false, sessionActive: false }));
+      setState(prev => ({ ...prev, isConnected: false, sessionActive: false, isStartingSession: false }));
       addLog('Disconnected from server', 'error');
     };
 
     ws.onerror = () => {
+      showError('WebSocket connection failed.');
       addLog('WebSocket error occurred', 'error');
     };
 
@@ -135,6 +151,17 @@ export const useWebSocket = () => {
     }
   }, [state.logs]);
 
+  const handleStartSession = (headless: boolean) => {
+    setState(prev => ({ ...prev, isStartingSession: true }));
+    loadingToastIdRef.current = showLoading('Starting session...');
+    sendMessage({ action: 'start_session', headless });
+  };
+
+  const handleStopSession = () => {
+    loadingToastIdRef.current = showLoading('Stopping session...');
+    sendMessage({ action: 'stop_session' });
+  };
+
   const clearLogs = () => setState(prev => ({ ...prev, logs: [] }));
   const clearData = () => setState(prev => ({ ...prev, scrapedData: null, screenshotImage: '' }));
   const hideCaptcha = () => setState(prev => ({ ...prev, captcha: { show: false, image: '' } }));
@@ -146,5 +173,7 @@ export const useWebSocket = () => {
     clearLogs,
     clearData,
     hideCaptcha,
+    handleStartSession,
+    handleStopSession,
   };
 };
