@@ -15,8 +15,10 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
     return null;
   }
 
+  const showBoth = scrapedData && screenshotImage;
+
   return (
-    <div className="space-y-5">
+    <div className={showBoth ? "grid grid-cols-1 lg:grid-cols-2 gap-5" : "space-y-5"}>
       {scrapedData && (
         <Card className="bg-white/95 shadow-lg rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between border-b p-4">
@@ -26,7 +28,7 @@ export const DataDisplay: React.FC<DataDisplayProps> = ({ scrapedData, screensho
             </Button>
           </CardHeader>
           <CardContent className="p-4">
-            <pre className="bg-gray-800 text-green-400 p-4 rounded-md overflow-x-auto text-sm">
+            <pre className="bg-gray-800 text-green-400 p-4 rounded-md overflow-x-auto text-sm max-h-[400px]">
               {JSON.stringify(scrapedData, null, 2)}
             </pre>
           </CardContent>

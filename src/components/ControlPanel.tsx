@@ -98,6 +98,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
               placeholder="Enter URL"
               disabled={!sessionActive}
+              className="w-full"
             />
             <Button
               type="submit"
@@ -122,6 +123,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>) => setCveId(e.target.value)}
               placeholder="Enter CVE ID"
               disabled={!sessionActive}
+              className="w-full"
             />
             <Button
               type="submit"
